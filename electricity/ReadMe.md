@@ -4,7 +4,7 @@ Quản lý điện năng tiêu thụ v1 :
   - Các thành phần :
     - idTier : mã được generate tự động theo thứ tự (nhưng đang bị lỗi là xuất phát từ 9 mà chưa tìm ra nguyên nhân).
     - minVal : giới hạn dưới của bậc giá.
-    - maxVal : giới hạn trên của bậc giá.
+    - maxVal : giới hạn trên của bậc giá.(thang đo cuối không có giới hạn trên , em có thử đặt thành Long và cho bằng null nhưng có lỗi nên em để lại là 10^9 với kiểu long)
     - pricePerUnit : giá điện trên mỗi bậc.
   - Có các thao tác đơn giản CRUD (được gọi theo ID).
 - Api UsageHistory : Quản lý lịch sử sử dụng điện.
