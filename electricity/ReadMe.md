@@ -1,0 +1,19 @@
+Quản lý điện năng tiêu thụ v1 :
+- Link thang điện tham khảo : https://zalopay.vn/1-so-dien-bao-nhieu-tien-3973
+- Api TierConfig : Quản lý thang giá điện.
+  - Các thành phần :
+    - idTier : mã được generate tự động theo thứ tự (nhưng đang bị lỗi là xuất phát từ 9 mà chưa tìm ra nguyên nhân).
+    - minVal : giới hạn dưới của bậc giá.
+    - maxVal : giới hạn trên của bậc giá.
+    - pricePerUnit : giá điện trên mỗi bậc.
+  - Có các thao tác đơn giản CRUD (được gọi theo ID).
+- Api UsageHistory : Quản lý lịch sử sử dụng điện.
+  - Các thành phần:
+    - idUsage : mã được generate tự động theo thứ tự.
+    - date : ngày tháng năm sử dụng điện.
+    - unitsUsed : số điện được dùng trong ngày.
+    - amount : quy đổi số điện ra tiền theo thang giá sử dụng.
+  - Có các thao tác CRUD :
+    - Delete : theo ID.
+    - Update : Cập nhật giá trị số điện của ngày.
+    - Read : có thể đọc theo ngày , id hoặc đọc tất cả.
