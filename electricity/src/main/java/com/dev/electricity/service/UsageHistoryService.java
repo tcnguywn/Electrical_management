@@ -6,11 +6,13 @@ import com.dev.electricity.dto.response.TierConfigResponse;
 import com.dev.electricity.dto.response.UsageHistoryResponse;
 import com.dev.electricity.entity.TierConfig;
 import com.dev.electricity.entity.UsageHistory;
+import com.dev.electricity.entity.User;
 import com.dev.electricity.exception.AppException;
 import com.dev.electricity.exception.ErrorCode;
 import com.dev.electricity.mapper.UsageHistoryMapper;
 import com.dev.electricity.repository.TierConfigRepository;
 import com.dev.electricity.repository.UsageHistoryRepository;
+import com.dev.electricity.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +23,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.YearMonth;
 import java.util.Date;
 import java.util.List;
 
@@ -32,14 +36,18 @@ public class UsageHistoryService {
     TierConfigRepository tierConfigRepository;
     UsageHistoryRepository usageHistoryRepository;
     UsageHistoryMapper usageHistoryMapper;
+    private final UserRepository userRepository;
 
     public UsageHistoryResponse createUsageHistory(UsageHistoryCreationRequest request) {
+        User user = userRepository.findById(request.getIdUser())
+                .orElseThrow(() -> new RuntimeException("User not found"));
         double amount = calculateElectricityBill(request.getUnitsUsed());
 
         UsageHistory usageHistory = new UsageHistory();
-        usageHistory.setDate(request.getDate());
+        usageHistory.setMonthUsage(request.getMonthUsage());
         usageHistory.setUnitsUsed(request.getUnitsUsed());
         usageHistory.setAmount(amount);
+        usageHistory.setUser(user);
 
         return usageHistoryMapper.toUsageHistoryResponse(usageHistoryRepository.save(usageHistory));
     }
@@ -54,18 +62,26 @@ public class UsageHistoryService {
         return usageHistoryMapper.toUsageHistoryResponse(usageHistoryRepository.findById(idUsage)
                 .orElseThrow(() -> new RuntimeException("Usage history not found")));
     }
-
-    public UsageHistoryResponse getUsageHistoryByDate(LocalDate date) {
-        return usageHistoryMapper.toUsageHistoryResponse(usageHistoryRepository.findByDate(date));
+    public UsageHistoryResponse getUsageHistoryByMonth(YearMonth monthUsage) {
+        return usageHistoryMapper.toUsageHistoryResponse(usageHistoryRepository.findByMonthUsage(monthUsage));
     }
 
-    public UsageHistoryResponse updateUsageHistory(LocalDate date, UsageHistoryUpdateRequest request) {
-        UsageHistory usageHistory = usageHistoryRepository.findByDate(date);
-        usageHistory.setUnitsUsed(request.getUnitsUsed());
+    public UsageHistoryResponse updateUsageHistory(long idUser, UsageHistoryUpdateRequest request) {
+        User user = userRepository.findById(idUser)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + idUser));
+
+        UsageHistory usageHistory = usageHistoryRepository.findByUserAndMonthUsage(user, request.getMonthUsage())
+                .orElseThrow(() -> new RuntimeException("UsageHistory not found for user and month"));
+
+        usageHistoryMapper.updateUsageHistory(usageHistory, request);
+
         usageHistory.setAmount(calculateElectricityBill(request.getUnitsUsed()));
 
-        return usageHistoryMapper.toUsageHistoryResponse(usageHistoryRepository.save(usageHistory));
+        UsageHistory updatedUsageHistory = usageHistoryRepository.save(usageHistory);
+
+        return usageHistoryMapper.toUsageHistoryResponse(updatedUsageHistory);
     }
+
 
 
     public void deleteUsageHistory(Long idUsage) {

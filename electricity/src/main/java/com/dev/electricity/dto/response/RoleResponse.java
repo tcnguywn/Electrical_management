@@ -4,18 +4,13 @@ package com.dev.electricity.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
-import java.time.YearMonth;
-
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UsageHistoryResponse {
-    Long idUsage;
-
-    YearMonth monthUsage;
-    long unitsUsed;
-    double amount;
+public class RoleResponse {
+    String roleName;
+    String description;
 }

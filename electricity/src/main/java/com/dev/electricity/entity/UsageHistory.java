@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 
 @Entity
 @Data
@@ -12,8 +13,12 @@ public class UsageHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long idUsage;
 
-    private LocalDate date;
+    private YearMonth monthUsage;
     private long unitsUsed;
     private double amount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_User")
+    private User user;
 
 }

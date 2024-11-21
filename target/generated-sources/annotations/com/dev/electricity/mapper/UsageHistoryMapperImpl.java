@@ -1,5 +1,6 @@
 package com.dev.electricity.mapper;
 
+import com.dev.electricity.dto.request.UsageHistory.UsageHistoryUpdateRequest;
 import com.dev.electricity.dto.response.UsageHistoryResponse;
 import com.dev.electricity.entity.UsageHistory;
 import javax.annotation.processing.Generated;
@@ -20,11 +21,21 @@ public class UsageHistoryMapperImpl implements UsageHistoryMapper {
 
         UsageHistoryResponse.UsageHistoryResponseBuilder usageHistoryResponse = UsageHistoryResponse.builder();
 
+        usageHistoryResponse.monthUsage( usageHistory.getMonthUsage() );
         usageHistoryResponse.idUsage( usageHistory.getIdUsage() );
-        usageHistoryResponse.date( usageHistory.getDate() );
         usageHistoryResponse.unitsUsed( usageHistory.getUnitsUsed() );
         usageHistoryResponse.amount( usageHistory.getAmount() );
 
         return usageHistoryResponse.build();
+    }
+
+    @Override
+    public void updateUsageHistory(UsageHistory usageHistory, UsageHistoryUpdateRequest request) {
+        if ( request == null ) {
+            return;
+        }
+
+        usageHistory.setMonthUsage( request.getMonthUsage() );
+        usageHistory.setUnitsUsed( request.getUnitsUsed() );
     }
 }

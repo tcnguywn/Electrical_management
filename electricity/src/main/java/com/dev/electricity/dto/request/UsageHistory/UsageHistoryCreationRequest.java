@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 
 @Data
 @NoArgsConstructor
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 public class UsageHistoryCreationRequest {
-    LocalDate date;
+    YearMonth monthUsage;
     long unitsUsed;
+    long idUser;
 }
