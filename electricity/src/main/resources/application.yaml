@@ -14,4 +14,6 @@ spring:
     show-sql: true
   flyway:
     enabled: false
+jwt :
+  signerKey : "KJ6yLDALgTbx2U4A9BasGYkzGW1ATVOqcZVllpe2aazpUi9X1Y4qiBGbr0exj/fC"
 

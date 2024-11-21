@@ -11,6 +11,8 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.Hibernate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +29,8 @@ public class UserService {
         if(userRepository.existsUserByUsername(request.getUsername()))
             throw new RuntimeException("Username already exists");
         User user = userMapper.toUser(request);
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
@@ -38,8 +42,6 @@ public class UserService {
     public UserResponse getUser(long idUser) {
         User user = userRepository.findById(idUser)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
-        Hibernate.initialize(user.getUsageHistories()); // Ép tải danh sách usageHistories
 
         return userMapper.toUserResponse(user);
     }
