@@ -4,6 +4,7 @@ import com.dev.electricity.dto.request.User.UserCreationRequest;
 import com.dev.electricity.dto.request.User.UserUpdateRequest;
 import com.dev.electricity.dto.response.UserResponse;
 import com.dev.electricity.entity.User;
+import com.dev.electricity.enums.Role;
 import com.dev.electricity.mapper.UserMapper;
 import com.dev.electricity.repository.UserRepository;
 import lombok.AccessLevel;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -24,13 +26,17 @@ import java.util.List;
 public class UserService {
     UserRepository userRepository;
     private final UserMapper userMapper;
-
+    PasswordEncoder passwordEncoder;
     public UserResponse createUser(UserCreationRequest request) {
         if(userRepository.existsUserByUsername(request.getUsername()))
             throw new RuntimeException("Username already exists");
         User user = userMapper.toUser(request);
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.USER.name());
+        user.setRoles(roles);
+
         return userMapper.toUserResponse(userRepository.save(user));
     }
 

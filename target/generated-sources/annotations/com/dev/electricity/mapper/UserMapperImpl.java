@@ -24,13 +24,13 @@ public class UserMapperImpl implements UserMapper {
             return null;
         }
 
-        User user = new User();
+        User.UserBuilder user = User.builder();
 
-        user.setUsername( request.getUsername() );
-        user.setPassword( request.getPassword() );
-        user.setFullName( request.getFullName() );
+        user.username( request.getUsername() );
+        user.password( request.getPassword() );
+        user.fullName( request.getFullName() );
 
-        return user;
+        return user.build();
     }
 
     @Override
@@ -44,6 +44,10 @@ public class UserMapperImpl implements UserMapper {
         userResponse.usageHistories( usageHistorySetToUsageHistoryResponseSet( user.getUsageHistories() ) );
         userResponse.username( user.getUsername() );
         userResponse.fullName( user.getFullName() );
+        Set<String> set1 = user.getRoles();
+        if ( set1 != null ) {
+            userResponse.roles( new LinkedHashSet<String>( set1 ) );
+        }
 
         return userResponse.build();
     }
