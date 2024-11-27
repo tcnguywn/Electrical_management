@@ -45,6 +45,13 @@ public class UserController {
                 .build();
     }
 
+    @GetMapping("/myInfo")
+    ApiResponse<UserResponse> getMyInfor() {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getMyInfo())
+                .build();
+    }
+
     @GetMapping("/fullname/{fullName}")
     ApiResponse<List<UserResponse>> getUserByUsername(@PathVariable String fullName){
         return ApiResponse.<List<UserResponse>>builder()
@@ -73,7 +80,5 @@ public class UserController {
                 .result("User has been deleted")
                 .build();
     }
-
-
 
 }

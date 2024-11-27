@@ -11,7 +11,10 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class UserService {
     UserRepository userRepository;
     private final UserMapper userMapper;
@@ -40,14 +44,25 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
+    @PreAuthorize("hasRole('ELECTRICIAN')")
     public List<UserResponse> getAllUsers() {
+        log.info("Get all users");
         List<User> users = userRepository.findAll();
         return users.stream().map(userMapper::toUserResponse).toList();
     }
-
+    @PreAuthorize("returnObject.username == authentication.name")
     public UserResponse getUser(long idUser) {
         User user = userRepository.findById(idUser)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return userMapper.toUserResponse(user);
+    }
+
+    public UserResponse getMyInfo() {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+
+        User user = userRepository.findByUsername(name).orElseThrow(() -> new RuntimeException("User not found"));
 
         return userMapper.toUserResponse(user);
     }
@@ -67,5 +82,4 @@ public class UserService {
     public void deleteUser(long idUser) {
         userRepository.deleteById(idUser);
     }
-
 }
