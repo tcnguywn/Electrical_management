@@ -19,12 +19,12 @@ public class RoleMapperImpl implements RoleMapper {
             return null;
         }
 
-        Role role = new Role();
+        Role.RoleBuilder role = Role.builder();
 
-        role.setRoleName( request.getRoleName() );
-        role.setDescription( request.getDescription() );
+        role.roleName( request.getRoleName() );
+        role.description( request.getDescription() );
 
-        return role;
+        return role.build();
     }
 
     @Override

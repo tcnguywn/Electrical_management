@@ -5,6 +5,7 @@ import com.dev.electricity.dto.request.ApiResponse;
 import com.dev.electricity.dto.request.Authentication.AuthenticationRequest;
 import com.dev.electricity.dto.request.Authentication.IntrospectRequest;
 import com.dev.electricity.dto.request.Authentication.LogoutRequest;
+import com.dev.electricity.dto.request.Authentication.RefreshRequest;
 import com.dev.electricity.dto.response.AuthenticationResponse;
 import com.dev.electricity.dto.response.IntrospectResponse;
 import com.dev.electricity.entity.InvalidatedToken;
@@ -49,6 +50,14 @@ public class AuthenticationController {
     ApiResponse<Void> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
         authenticationService.logout(request);
         return ApiResponse.<Void>builder()
+                .build();
+    }
+
+    @PostMapping("/refresh")
+    ApiResponse<AuthenticationResponse> refresh(@RequestBody RefreshRequest request) throws ParseException, JOSEException {
+        var result = authenticationService.refreshToken(request);
+        return ApiResponse.<AuthenticationResponse>builder()
+                .result(result)
                 .build();
     }
 }

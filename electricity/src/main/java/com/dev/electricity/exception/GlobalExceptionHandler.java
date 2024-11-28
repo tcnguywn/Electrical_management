@@ -4,7 +4,6 @@ package com.dev.electricity.exception;
 
 import com.dev.electricity.dto.request.ApiResponse;
 import jakarta.validation.ConstraintViolation;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -66,10 +65,12 @@ public class GlobalExceptionHandler {
         try {
             errorCode = ErrorCode.valueOf(enumKey);
 
-            var constrainViolation = exception.getBindingResult()
+            var constraintViolation = exception.getBindingResult()
                     .getAllErrors().getFirst().unwrap(ConstraintViolation.class);
 
-            attributes = constrainViolation.getConstraintDescriptor().getAttributes();
+            attributes = constraintViolation.getConstraintDescriptor().getAttributes();
+
+            log.info(attributes.toString());
 
         } catch (IllegalArgumentException e){
 
@@ -79,13 +80,14 @@ public class GlobalExceptionHandler {
 
         apiResponse.setCode(errorCode.getCode());
         apiResponse.setMessage(Objects.nonNull(attributes) ?
-                mapAttribute(errorCode.getMessage(),attributes)
+                mapAttribute(errorCode.getMessage(), attributes)
                 : errorCode.getMessage());
 
         return ResponseEntity.badRequest().body(apiResponse);
     }
-    private String mapAttribute(String message, Map<String, Object> attributes) {
-        String minValue = attributes.get(MIN_ATTRIBUTE).toString();
+
+    private String mapAttribute(String message, Map<String, Object> attributes){
+        String minValue = String.valueOf(attributes.get(MIN_ATTRIBUTE));
 
         return message.replace("{" + MIN_ATTRIBUTE + "}", minValue);
     }

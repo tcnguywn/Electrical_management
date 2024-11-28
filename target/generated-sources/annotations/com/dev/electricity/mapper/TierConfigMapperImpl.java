@@ -20,13 +20,13 @@ public class TierConfigMapperImpl implements TierConfigMapper {
             return null;
         }
 
-        TierConfig tierConfig = new TierConfig();
+        TierConfig.TierConfigBuilder tierConfig = TierConfig.builder();
 
-        tierConfig.setMinVal( request.getMinVal() );
-        tierConfig.setMaxVal( request.getMaxVal() );
-        tierConfig.setPricePerUnit( request.getPricePerUnit() );
+        tierConfig.minVal( request.getMinVal() );
+        tierConfig.maxVal( request.getMaxVal() );
+        tierConfig.pricePerUnit( request.getPricePerUnit() );
 
-        return tierConfig;
+        return tierConfig.build();
     }
 
     @Override
