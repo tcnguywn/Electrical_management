@@ -2,6 +2,7 @@ package com.dev.electricity.dto.request.User;
 
 
 import com.dev.electricity.validator.DobConstraint;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -16,6 +17,6 @@ public class UserUpdateRequest {
     String password;
     String fullName;
 
-    @DobConstraint(min = 18)
+    @DobConstraint(min = 18, message = "INVALID_DOB")
     LocalDate dob;
 }

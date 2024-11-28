@@ -5,6 +5,8 @@ import com.dev.electricity.dto.request.User.UserUpdateRequest;
 import com.dev.electricity.dto.response.UserResponse;
 import com.dev.electricity.entity.User;
 import com.dev.electricity.enums.Role;
+import com.dev.electricity.exception.AppException;
+import com.dev.electricity.exception.ErrorCode;
 import com.dev.electricity.mapper.UserMapper;
 import com.dev.electricity.repository.UserRepository;
 import lombok.AccessLevel;
@@ -36,7 +38,7 @@ public class UserService {
 
     public UserResponse createUser(UserCreationRequest request) {
         if(userRepository.existsUserByUsername(request.getUsername()))
-            throw new RuntimeException("Username already exists");
+            throw new AppException(ErrorCode.USER_EXISTED);
 
         long years = ChronoUnit.YEARS.between(request.getDob(), LocalDate.now());
 //        System.out.println(years);
@@ -59,7 +61,7 @@ public class UserService {
     @PreAuthorize("returnObject.username == authentication.name")
     public UserResponse getUser(long idUser) {
         User user = userRepository.findById(idUser)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         return userMapper.toUserResponse(user);
     }
@@ -68,7 +70,7 @@ public class UserService {
         var context = SecurityContextHolder.getContext();
         String name = context.getAuthentication().getName();
 
-        User user = userRepository.findByUsername(name).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         return userMapper.toUserResponse(user);
     }
@@ -80,7 +82,7 @@ public class UserService {
 
     public UserResponse updateUser(long idUser, UserUpdateRequest request) {
         User user = userRepository.findById(idUser)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         userMapper.updateUser(user,request);
         return userMapper.toUserResponse(userRepository.save(user));
     }

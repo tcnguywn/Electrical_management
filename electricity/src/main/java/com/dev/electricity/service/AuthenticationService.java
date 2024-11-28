@@ -8,6 +8,7 @@ import com.dev.electricity.dto.response.IntrospectResponse;
 import com.dev.electricity.entity.InvalidatedToken;
 import com.dev.electricity.entity.User;
 import com.dev.electricity.exception.AppException;
+import com.dev.electricity.exception.ErrorCode;
 import com.dev.electricity.repository.InvalidatedRepository;
 import com.dev.electricity.repository.UserRepository;
 import com.nimbusds.jose.*;
@@ -63,14 +64,14 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         var user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() ->new AppException(ErrorCode.USER_NOT_EXISTED));
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
 
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
         if(!authenticated)
-            throw new RuntimeException("Invalid password");
+            throw new AppException(ErrorCode.INVALID_PASSWORD);
 
         var token = generateToken(user);
 
@@ -103,10 +104,10 @@ public class AuthenticationService {
         var verified = signedJWT.verify(verifier);
 
         if(!verified && expiryTime.after(new Date()))
-            throw new RuntimeException("Invalid token");
+            throw new AppException(ErrorCode.INVALID_KEY);
 
         if(invalidatedRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
-            throw new RuntimeException("Invalid token");
+            throw new AppException(ErrorCode.INVALID_KEY);
 
         return signedJWT;
     }
