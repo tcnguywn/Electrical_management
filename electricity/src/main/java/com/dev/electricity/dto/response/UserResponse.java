@@ -4,6 +4,7 @@ package com.dev.electricity.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -13,8 +14,8 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserResponse {
     String username;
-    private String fullName;
+    String fullName;
+    LocalDate dob;
     Set<UsageHistoryResponse> usageHistories;
-    private Set<String> roles;;
-
+    Set<String> roles;;
 }

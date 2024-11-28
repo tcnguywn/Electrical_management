@@ -1,9 +1,10 @@
 package com.dev.electricity.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.*;
+
+import java.util.Date;
 
 @Entity
 @Getter
@@ -11,8 +12,8 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Role {
+public class InvalidatedToken {
     @Id
-    String roleName;
-    String description;
+    String id;
+    Date expiryTime;
 }

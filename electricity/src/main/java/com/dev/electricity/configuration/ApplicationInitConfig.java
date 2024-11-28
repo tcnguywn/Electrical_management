@@ -41,8 +41,6 @@ public class ApplicationInitConfig {
                   userRepository.save(user);
                   log.warn("electrician user has been created with default password");
               }
-
-
         };
     }
 }

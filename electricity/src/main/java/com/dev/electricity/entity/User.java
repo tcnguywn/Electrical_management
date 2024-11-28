@@ -3,10 +3,10 @@ package com.dev.electricity.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -15,15 +15,22 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long idUser;
-    private String username;
-    private String password;
-    private String fullName;
+    long idUser;
+
+    String username;
+
+    String password;
+
+    String fullName;
+
+    LocalDate dob;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<UsageHistory> usageHistories = new HashSet<>();
+    Set<UsageHistory> usageHistories = new HashSet<>();
 
     @ElementCollection
     Set<String> roles;

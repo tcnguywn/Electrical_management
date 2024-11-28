@@ -19,6 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 
@@ -31,9 +33,13 @@ public class UserService {
     UserRepository userRepository;
     private final UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+
     public UserResponse createUser(UserCreationRequest request) {
         if(userRepository.existsUserByUsername(request.getUsername()))
             throw new RuntimeException("Username already exists");
+
+        long years = ChronoUnit.YEARS.between(request.getDob(), LocalDate.now());
+//        System.out.println(years);
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 

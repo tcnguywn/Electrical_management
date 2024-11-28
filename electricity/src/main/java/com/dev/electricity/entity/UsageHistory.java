@@ -1,13 +1,17 @@
 package com.dev.electricity.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UsageHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
